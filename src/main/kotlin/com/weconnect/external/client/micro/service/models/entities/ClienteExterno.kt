@@ -3,6 +3,9 @@ package com.weconnect.external.client.micro.service.models.entities
 import io.swagger.v3.oas.annotations.media.Schema
 import java.io.Serializable
 import javax.persistence.*
+import javax.validation.constraints.Email
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 @Entity(name = "cliente_externo")
 @Schema(
@@ -13,8 +16,10 @@ import javax.persistence.*
 class ClienteExterno : Serializable {
 
     @Id
+    @TableGenerator(name="external_client_sequential_value", initialValue = 2307)
     @GeneratedValue(
         strategy = GenerationType.IDENTITY,
+        generator = "external_client_sequential_value"
     )
     @Column(name = "id")
     @Schema(
@@ -23,9 +28,10 @@ class ClienteExterno : Serializable {
         example = "1",
         readOnly = true
     )
-    var externalClientID: Long = 0
+    var externalClientID: Long? = 0
 
-    @Column(name = "cedula", unique = true)
+    @NotEmpty(message = "EL CAMPO NO PUEDE ESTAR VACIO")
+    @Column(name = "cedula", unique = true, nullable = false)
     @Schema(
         name = "cedula",
         description = "ES EL NUMERO DE CEDULA DE CADA CLIENTE EXTERNO DENTRO DE LA BASE DE DATOS",
@@ -34,7 +40,8 @@ class ClienteExterno : Serializable {
     )
     var externalClientIdentification: String? = ""
 
-    @Column(name = "nombre", unique = true)
+    @NotEmpty(message = "EL CAMPO NO PUEDE ESTAR VACIO")
+    @Column(name = "nombre", nullable = false)
     @Schema(
         name = "nombre",
         description = "ES EL NOMBRE DE CADA CLIENTE EXTERNO DENTRO DE LA BASE DE DATOS",
@@ -52,6 +59,7 @@ class ClienteExterno : Serializable {
     )
     var externalClientLastName: String? = ""
 
+    @Email
     @Column(name = "email", unique = true)
     @Schema(
         name = "email",

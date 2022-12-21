@@ -17,13 +17,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.Optional
 import javax.validation.Valid
 
 @RestController
@@ -157,15 +156,7 @@ class ClienteExternoController {
         description = "ESTE SERVICIO SE ENCARGA DE CREAR NUEVOS CLIENTES EXTERNOS EN LA BASE DE DATOS",
         method = "POST",
         parameters = [Parameter(
-            name = "externalClientID" +
-                    "externalClientIdentification" +
-                    "externalClientFirstName" +
-                    "externalClientLastName" +
-                    "externalClientEmail" +
-                    "externalClientAddress" +
-                    "externalClientIdentificationType" +
-                    "externalClientPhoneNumber" +
-                    "idCompany",
+            name = "CREAR CLIENTE EXTERNO",
             description = "PARAMETROS QUE POSEEN LOS OBJETOS DE TIPO CLIENTE EXTERNO",
             required = true
         )]
@@ -199,13 +190,15 @@ class ClienteExternoController {
     ): Any {
         val response = HashMap<String, Any>()
         return try {
-            //val Optional<ClienteExterno> clienteOpcional = Optional.ofNullable(iClienteExternoService!!.findClienteExternoByexternalClientIdentification(clienteExterno.externalClientIdentification)
+            if (result.hasErrors())
+                return iValidationService!!.validationObject(result)
             val newClienteExterno = iClienteExternoService!!.saveClienteExterno(
                 clienteExterno = clienteExterno
             )
+
             run {
                 response["message"] = StaticValues.MESSAGE_SUCCESS_SAVE
-                response["response"] = clienteExterno
+                response["response"] = newClienteExterno
                 ResponseEntity<Map<*, *>>(response, HttpStatus.OK)
             }
         } catch (e: DataAccessException) {
@@ -213,6 +206,74 @@ class ClienteExternoController {
         }
     }
 
+    @PutMapping("/findExternalClientByName/{externalClientID}")
+    @Operation(
+        summary = "ACTUALIZAR UN CLIENTE EXTERNO",
+        description = "ESTE SERVICIO SE ENCARGA DE ACTUALIZAR CIERTOS DATOS DE LOS CLIENTES EXTERNOS EN LA BASE DE DATOS",
+        method = "POST",
+        parameters = [Parameter(
+            name = "ACTUALIZAR CLIENTE EXTERNO",
+            description = "PARAMETROS QUE POSEEN LOS OBJETOS DE TIPO CLIENTE EXTERNO",
+            required = true
+        )]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "SI LOS DATOS INGRESADOS SON CORRECTOS SE ACTUALIZARAN LOS DATOS DEL CLIENTE EXTERNO EN LA BASE DE DATOS",
+                content = [
+                    (Content(
+                        mediaType = "application/json",
+                        schema = Schema(
+                            allOf = arrayOf(ClienteExterno::class)
+                        )
+                    ))
+                ]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "ESTE MENSAJE SE MOSTRARA EN CASO DE QUE LOS DATOS INGRESADOS SEAN INCORRECTOS"
+            ),
+            ApiResponse(
+                responseCode = "500",
+                description = "ESTE MENSAJE SE MOSTRARA EN CASO DE QUE EXISTA UN ERROR INTERNO DEL SERVIDOR"
+            )
+        ]
+    )
+    fun updateExternalClient(
+        @PathVariable("externalClientID") externalClientID: Long,
+        @Valid @RequestBody clienteExterno: ClienteExterno,
+        result: BindingResult
+    ): Any {
+        val response = HashMap<String, Any>()
+        return try {
+            if (result.hasErrors())
+                return iValidationService!!.validationObject(result)
 
+            val buscarClienteExterno = iClienteExternoService!!.findClienteExternoByExternalClientID(
+                externalClientID = externalClientID
+            )
 
+            if (buscarClienteExterno.isPresent and clienteExterno.externalClientID!!.equals(externalClientID)) {
+                //clienteExternoUpdate.externalClientFirstName
+                val updateClienteExterno = iClienteExternoService.saveClienteExterno(
+                    clienteExterno = clienteExterno
+                )
+                run {
+                    response["message"] = StaticValues.MESSAGE_SUCCESS_UPDATE
+                    response["response"] = updateClienteExterno
+                    ResponseEntity<Map<*, *>>(response, HttpStatus.OK)
+                }
+            } else {
+                run {
+                    response["message"] = StaticValues.MESSAGE_ERROR_FIND
+                    ResponseEntity<Map<*, *>>(response, HttpStatus.OK)
+                }
+            }
+
+        } catch (e: DataAccessException) {
+            iValidationService!!.getExceptionMessage(e)
+        }
+    }
 }

@@ -18,7 +18,8 @@ interface IClienteExternoService {
     @Transactional(readOnly = false)
     fun saveClienteExterno(clienteExterno: ClienteExterno)
 
-//    @Transactional(readOnly = true)
-//    fun findClienteExternobyID(externalClientID: Long): Optional<ClienteExterno>
+    @Transactional(readOnly = true)
+    fun findClienteExternoByExternalClientID(externalClientID: Long): Optional<ClienteExterno>
+
 
 }

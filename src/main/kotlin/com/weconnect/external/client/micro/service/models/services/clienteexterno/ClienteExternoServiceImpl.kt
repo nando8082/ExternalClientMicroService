@@ -4,7 +4,6 @@ import com.weconnect.external.client.micro.service.models.dao.IClienteExternoDAO
 import com.weconnect.external.client.micro.service.models.entities.ClienteExterno
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
 @Service
@@ -29,9 +28,8 @@ class ClienteExternoServiceImpl : IClienteExternoService {
         iClienteExternoDAO!!.save(clienteExterno)
     }
 
-//    override fun findClienteExternobyID(externalClientID: Long): Optional<ClienteExterno> {
-//        return iClienteExternoDAO!!.findClienteExternoByID(externalClientID = externalClientID)
-//    }
-
+    override fun findClienteExternoByExternalClientID(externalClientID: Long): Optional<ClienteExterno> {
+        return iClienteExternoDAO!!.findClienteExternoByExternalClientID(externalClientID = externalClientID)
+    }
 
 }

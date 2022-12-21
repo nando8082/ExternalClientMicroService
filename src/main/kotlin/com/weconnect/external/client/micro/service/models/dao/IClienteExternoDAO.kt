@@ -11,6 +11,7 @@ interface IClienteExternoDAO : CrudRepository<ClienteExterno, Long> {
 
     fun findClienteExternoByexternalClientFirstName(externalClientFirstName: String): List<ClienteExterno>
 
-//    fun findClienteExternoByID(externalClientID: Long): Optional<ClienteExterno>
+    fun findClienteExternoByExternalClientID(externalClientID: Long): Optional<ClienteExterno>
+
 
 }

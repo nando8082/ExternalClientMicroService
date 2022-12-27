@@ -56,7 +56,7 @@ class ClienteExternoController {
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "SI LA CÉDULA DEL CLIENTE EXTERNO ES CORRECTO DEVOLVERA LOS PRODUCTOS EXISTENTES EN LA BASE DE DATOS",
+                description = "SI LA CÉDULA DEL CLIENTE EXTERNO ES CORRECTO DEVOLVERA EL CLIENTE EXISTENTE EN LA BASE DE DATOS",
                 content = [
                     (Content(
                         mediaType = "application/json",

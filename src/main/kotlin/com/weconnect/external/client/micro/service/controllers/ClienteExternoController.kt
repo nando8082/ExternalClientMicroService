@@ -210,7 +210,7 @@ class ClienteExternoController {
     @Operation(
         summary = "ACTUALIZAR UN CLIENTE EXTERNO",
         description = "ESTE SERVICIO SE ENCARGA DE ACTUALIZAR CIERTOS DATOS DE LOS CLIENTES EXTERNOS EN LA BASE DE DATOS",
-        method = "POST",
+        method = "PUT",
         parameters = [Parameter(
             name = "ACTUALIZAR CLIENTE EXTERNO",
             description = "PARAMETROS QUE POSEEN LOS OBJETOS DE TIPO CLIENTE EXTERNO",
